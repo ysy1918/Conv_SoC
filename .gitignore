@@ -1,0 +1,8 @@
+~*
+.vscode
+work
+*.mpf
+*.mti
+*.wlf
+*.vstf
+coverage_report
