@@ -9,10 +9,10 @@ adder16bit R1(A[15:0], B[15:0], Cin, Sum[15:0], c1);
 adder8bit  R3(A[23:16], B[23:16], c1, Sum[23:16], c2);
 adder16bit R2(A[39:24], B[39:24], split ? c2 : Cin, Sum[39:24], c3);
 adder4bit  R4(A[43:40], B[43:40], c3, Sum[43:40], c4);
-FA A5(A[44], B[44], c4, Sum[44], c5);
-FA A6(A[45], B[45], c5, Sum[45], c6);
-FA A7(A[46], B[46], c6, Sum[46], c7);
-FA A8(A[47], B[47], c7, Sum[47], Cout);
+FA_1 A5(A[44], B[44], c4, Sum[44], c5);
+FA_1 A6(A[45], B[45], c5, Sum[45], c6);
+FA_1 A7(A[46], B[46], c6, Sum[46], c7);
+FA_1 A8(A[47], B[47], c7, Sum[47], Cout);
 
 xor(overflow,c6,Cout);
 
@@ -24,10 +24,10 @@ input Cin;
 output [3:0] Sum;
 output Cout;
 wire c1, c2, c3;
-FA A1(A[0], B[0], Cin, Sum[0], c1);
-FA A2(A[1], B[1], c1, Sum[1], c2);
-FA A3(A[2], B[2], c2, Sum[2], c3);
-FA A4(A[3], B[3], c3, Sum[3], Cout);
+FA_1 A1(A[0], B[0], Cin, Sum[0], c1);
+FA_1 A2(A[1], B[1], c1, Sum[1], c2);
+FA_1 A3(A[2], B[2], c2, Sum[2], c3);
+FA_1 A4(A[3], B[3], c3, Sum[3], Cout);
 endmodule
 
 module adder8bit(A, B, Cin, Sum, Cout);

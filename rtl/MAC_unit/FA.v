@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module FA(input A, input B, input Cin, output Sum, output Cout 
+module FA_1(input A, input B, input Cin, output Sum, output Cout 
     );
 wire p,r,s;
 xor (p,A,B);
