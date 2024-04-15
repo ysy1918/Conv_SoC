@@ -38,7 +38,7 @@ module conv_core_full_2x2 (
     conv_core_1channel_2x2  u_conv_core_1channel_2x2_1 (
     .image                   ( image1      ),
     .filter                  ( filter1     ),
-    .clk                     ( clk        ),
+    .clk                     ( clk_spi        ),
     .rst_n                   ( rst_n      ),
 
     .conv_out                ( channel_out1   )
@@ -47,7 +47,7 @@ module conv_core_full_2x2 (
     conv_core_1channel_2x2  u_conv_core_1channel_2x2_2 (
     .image                   ( image2      ),
     .filter                  ( filter2     ),
-    .clk                     ( clk        ),
+    .clk                     ( clk_spi        ),
     .rst_n                   ( rst_n      ),
 
     .conv_out                ( channel_out2   )
@@ -56,7 +56,7 @@ module conv_core_full_2x2 (
     conv_core_1channel_2x2  u_conv_core_1channel_2x2_3 (
     .image                   ( image3      ),
     .filter                  ( filter3     ),
-    .clk                     ( clk        ),
+    .clk                     ( clk_spi        ),
     .rst_n                   ( rst_n      ),
 
     .conv_out                ( channel_out3   )
