@@ -32,9 +32,9 @@ wire cin, cout1;
 );*/
 
 multiply_8x8  u_multiply_8x8 (
-    .A                       ( a        ),
-    .B                       ( b        ),
-    .S                   ( S    )
+    .x                       ( a        ),
+    .y                       ( b        ),
+    .p                   ( S    )
 );
 
 /*adder  u_adder1 (

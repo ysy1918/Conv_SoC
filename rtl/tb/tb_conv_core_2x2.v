@@ -14,6 +14,8 @@ reg   rst_n                                = 0 ;
 
 // conv_core_2x2 Outputs
 wire  [15:0]  conv_out                     ;
+//reg [9:0] temp = 0;
+//reg [0:7] temp2 = 8'b11110000;
 
 
 initial
@@ -40,6 +42,11 @@ begin
     #(PERIOD*2) begin
         image = {8'd1,8'd2,8'd3,8'd4};
         filter = {8'd1,8'd2,8'd1,8'd0};
+        //temp = temp2[0:7];
+    end
+    #(PERIOD*4) begin
+        image = {8'd2,8'd5,8'd3,8'd4};
+        filter = {8'd1,8'd0,8'd3,8'd0};
     end
 end
 
