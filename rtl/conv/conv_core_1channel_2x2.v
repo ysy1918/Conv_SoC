@@ -25,7 +25,7 @@ module conv_core_1channel_2x2 (
 // mult
 
 conv_core_2x2  u_conv_core_2x2_0 (
-    .image                   ( image[31:0]      ),
+    .image                   ( {image[55:40], image[15:0]}      ),
     .filter                  ( filter     ),
     .clk                     ( clk        ),
     .rst_n                   ( rst_n      ),
@@ -34,7 +34,7 @@ conv_core_2x2  u_conv_core_2x2_0 (
 );
 
 conv_core_2x2  u_conv_core_2x2_1 (
-    .image                   ( image[47:16]      ),
+    .image                   ( {image[63:48], image[23:8]}      ),
     .filter                  ( filter     ),
     .clk                     ( clk        ),
     .rst_n                   ( rst_n      ),
@@ -43,7 +43,7 @@ conv_core_2x2  u_conv_core_2x2_1 (
 );
 
 conv_core_2x2  u_conv_core_2x2_2 (
-    .image                   ( image[63:32]      ),
+    .image                   ( {image[71:56], image[31:16] }     ),
     .filter                  ( filter     ),
     .clk                     ( clk        ),
     .rst_n                   ( rst_n      ),
@@ -52,7 +52,7 @@ conv_core_2x2  u_conv_core_2x2_2 (
 );
 
 conv_core_2x2  u_conv_core_2x2_3 (
-    .image                   ( image[79:48]      ),
+    .image                   ( {image[79:64], image[39:24] }     ),
     .filter                  ( filter     ),
     .clk                     ( clk        ),
     .rst_n                   ( rst_n      ),

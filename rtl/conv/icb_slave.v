@@ -15,15 +15,10 @@
 // 2023/03/21   Lisp           
 // -FHDR----------------------------------------------------------------------------
 
-`define IMAGE1_ADDR    12'h000
-`define IMAGE2_ADDR    12'h004
-`define IMAGE3_ADDR    12'h008
-`define IMAGE4_ADDR    12'h00c//pass 16 8bit operand in 1 cycle at most
-`define FILTER1_ADDR   12'h010
-`define FILTER2_ADDR   12'h040
-`define FILTER3_ADDR   12'h080
-`define CONTROL_ADDR   12'h0c0
-`define SUM_ADDR       12'h100
+`define SIZE_ADDR      12'h000
+`define CONTROL_ADDR   12'h040
+`define SUM_ADDR       12'h080
+`define BASE_ADDR      32'h1004_2000
 
 
 module icb_slave(
@@ -45,14 +40,7 @@ module icb_slave(
     input           rst_n,
 
     // reg output
-    output  reg [31:0]  IMAGE1,
-    output  reg [31:0]  IMAGE2,
-    output  reg [31:0]  IMAGE3,
-    output  reg [31:0]  IMAGE4,
-    output  reg [31:0]  FILTER1,
-    output  reg [31:0]  FILTER2,
-    output  reg [31:0]  FILTER3,
-    output  reg [31:0]  FILTER4,
+    output  reg [6:0] SIZE,
     output  reg [31:0]  CONTROL,
     input  reg [31:0]  SUM
 
@@ -83,37 +71,19 @@ end
 always@(posedge clk)
 begin
     if(!rst_n) begin
-        IMAGE1 <= 32'h0;
-        IMAGE2 <= 32'h0;
-        IMAGE3 <= 32'h0;
-        IMAGE4 <= 32'h0;
-        FILTER1 <= 32'h0;
-        FILTER2 <= 32'h0;
-        FILTER3 <= 32'h0;
-        CONTROL <= 32'h0;//32'h0 idle, 32'h1 slide image, 32'h2 change image row, 32'h4 change filter,
+        SIZE <= 32'h0;
+        CONTROL <= 32'h0;//32'h0 idle, 32'h1 begin,
         //
     end
     else begin
         if(icb_cmd_valid & icb_cmd_ready & !icb_cmd_read) begin
             case(icb_cmd_addr[11:0])
-                `IMAGE1_ADDR:  IMAGE1 <= icb_cmd_wdata;
-                `IMAGE2_ADDR:  IMAGE2 <= icb_cmd_wdata;
-                `IMAGE3_ADDR:  IMAGE3 <= icb_cmd_wdata;
-                `IMAGE4_ADDR:  IMAGE4 <= icb_cmd_wdata;
-                `FILTER1_ADDR:  FILTER1 <= icb_cmd_wdata;
-                `FILTER2_ADDR:  FILTER2 <= icb_cmd_wdata;
-                `FILTER3_ADDR:  FILTER3 <= icb_cmd_wdata;
+                `SIZE_ADDR: SIZE <= icb_cmd_wdata;
                 `CONTROL_ADDR:  CONTROL <= icb_cmd_wdata;
             endcase
         end
         else begin
-            IMAGE1 <=IMAGE1;
-            IMAGE2 <=IMAGE2;
-            IMAGE3 <=IMAGE3;
-            IMAGE4 <=IMAGE4;
-            FILTER1 <= FILTER1;
-            FILTER2 <= FILTER2;
-            FILTER3 <= FILTER3;
+            SIZE <=SIZE;
             CONTROL <= CONTROL;
         end
     end
@@ -148,13 +118,7 @@ begin
     else begin
         if(icb_cmd_valid & icb_cmd_ready & icb_cmd_read) begin
             case(icb_cmd_addr[11:0])
-                `IMAGE1_ADDR:  icb_rsp_rdata <= IMAGE1;
-                `IMAGE2_ADDR:  icb_rsp_rdata <= IMAGE2;
-                `IMAGE3_ADDR:  icb_rsp_rdata <= IMAGE3;
-                `IMAGE4_ADDR:  icb_rsp_rdata <= IMAGE4;
-                `FILTER1_ADDR:  icb_rsp_rdata <= FILTER1;
-                `FILTER2_ADDR:  icb_rsp_rdata <= FILTER2;
-                `FILTER3_ADDR:  icb_rsp_rdata <= FILTER3;
+                `SIZE_ADDR:  icb_rsp_rdata <= SIZE;
                 `CONTROL_ADDR:  icb_rsp_rdata <= CONTROL;
                 `SUM_ADDR: icb_rsp_rdata <= SUM;
             endcase
