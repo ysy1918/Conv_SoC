@@ -12,6 +12,7 @@ input       [31:0]              icb_cmd_wdata,
 input                          icb_rsp_valid,
 output                           icb_rsp_ready,
 output      [31:0]              icb_rsp_rdata,
+output reg  [7:0]               mean,
 output                          icb_rsp_err 
 
 );
@@ -30,6 +31,8 @@ output                          icb_rsp_err
     reg [3:0] wr_cnt;
     reg [1:0] row_cnt;
     reg [1:0] stablizer;
+    reg [7:0] i;
+    
 
     //wire [6:0]   SIZE;
     wire [31:0]  SUM;
@@ -68,6 +71,7 @@ always @(posedge clk or negedge rst_n) begin
         re <= 1;
         image <= 'b0;
         filter <= 'b0;
+        mean <= 'b0;
     end
     else if( EN && (status == 0) ) begin //setup filter
         stablizer <= stablizer + 1'b1;
@@ -154,10 +158,22 @@ always @(posedge clk or negedge rst_n) begin
                 image[8*2*5*3-1:8*5*3] <= dout[15*DATA_WIDTH-1:0];
             end
             8'h0:begin //setup filter
-                filter = dout[12*DATA_WIDTH-1:0];
+                filter <= dout[12*DATA_WIDTH-1:0];
             end //always first do, refresh anyway, no need wait for EN.
             default: ; //idle
         endcase
+
+        if(row_cnt == 'b0) begin
+            for (i = 15; i < 30; i = i + 1) begin  
+                mean <= mean + image[i*8 +: 8];  // 累加每个8位的段  
+            end 
+        end
+        else begin
+            for (i = 0; i < 30; i = i + 1) begin  
+            // 检查索引i的尾数是否为0或5  
+                if ((i % 10 != 0) && (i % 10 != 5)) mean <= mean + image[i*8 +: 8]; // 累加选定的字节   
+        end 
+        end
 
     end
 end
