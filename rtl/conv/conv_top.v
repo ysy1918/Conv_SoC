@@ -27,6 +27,7 @@ output                          icb_rsp_err
     reg [7:0] status;
     reg [6:0] size_cnt;
     reg [3:0] col_cnt;
+    reg [3:0] wr_cnt;
     reg [1:0] row_cnt;
     reg [1:0] stablizer;
 
@@ -60,6 +61,7 @@ always @(posedge clk or negedge rst_n) begin
         //cal_begin <= 0;
         size_cnt <= 'b0;
         col_cnt <= 'b0;
+        wr_cnt <= 'b0;
         row_cnt <= 'b0;
         stablizer <= 'b0;
         we <= 0;
@@ -72,6 +74,7 @@ always @(posedge clk or negedge rst_n) begin
         case (stablizer)
             2'b00: begin
                 col_cnt <= 4'b1;
+                wr_cnt <= 4'b1;
                 //cal_begin <= 0;
                 addr_r <= 9'd0;
                 we <= 0;
@@ -80,6 +83,7 @@ always @(posedge clk or negedge rst_n) begin
                 status <= 8'h4;
                 addr_r <= col_cnt * STRIDE_IMAGE_READ + 135 * row_cnt;
                 col_cnt <= col_cnt + 4'b0001;
+                wr_cnt <= wr_cnt + 4'b0001;
             end
             default: stablizer <= 'b0;
         endcase        
@@ -87,12 +91,14 @@ always @(posedge clk or negedge rst_n) begin
     else if(EN && (status == 4) && col_cnt < 4'b0011) begin //load image
         if(stablizer == 2'b01) begin //wait 1 cycle 
             stablizer <= stablizer + 1'b1;
+            wr_cnt <= wr_cnt + 4'b0001;
         end
         else begin
             stablizer <= 'b0;
             status <= 8'h4;
             addr_r <= col_cnt * STRIDE_IMAGE_READ + 135 * row_cnt; //addr_r+15
             col_cnt <= col_cnt + 4'b0001;
+            wr_cnt <= wr_cnt + 4'b0001;
         end
             /*stablizer <= 'b0;
             status <= 8'h4;
@@ -105,6 +111,7 @@ always @(posedge clk or negedge rst_n) begin
     else if(EN && ( ( (status == 4) && col_cnt >= 4'b0011 ) || (status == 1) ) ) begin //busy
         if(col_cnt == 4'b1000) begin // to load
             col_cnt <= 4'b0;
+            wr_cnt <= 'b0;
             row_cnt <= row_cnt +1;
             addr_r <= col_cnt * STRIDE_IMAGE_READ + 135 * row_cnt;
             status <= 8'h4;
@@ -112,6 +119,7 @@ always @(posedge clk or negedge rst_n) begin
         end
         else begin //go on cal
             col_cnt <= col_cnt + 4'b0001;
+            wr_cnt <= wr_cnt + 4'b0001;
             //cal_begin <= 1;
             addr_r <= STRIDE_IMAGE_READ * col_cnt + 135 * row_cnt;
             status <= 8'h1;
@@ -119,11 +127,11 @@ always @(posedge clk or negedge rst_n) begin
         
     end
 
-    if(col_cnt >= 4'h6) begin
+    if(wr_cnt >= 4'h5) begin
             we <= 1;
             addr_w <= addr_w + 9'b0_0000_0100;
     end  //wait 1 cycle for conv output
-    else we <= 0;
+    else if (wr_cnt == 4'h4) we <= 0;
 end
 
 //FSM end
