@@ -12,7 +12,7 @@ input       [31:0]              icb_cmd_wdata,
 input                          icb_rsp_valid,
 output                           icb_rsp_ready,
 output      [31:0]              icb_rsp_rdata,
-output reg  [7:0]               mean,
+output reg  [15:0]               mean,
 output                          icb_rsp_err 
 
 );
@@ -163,17 +163,12 @@ always @(posedge clk or negedge rst_n) begin
             default: ; //idle
         endcase
 
-        if(row_cnt == 'b0) begin
-            for (i = 15; i < 30; i = i + 1) begin  
-                mean <= mean + image[i*8 +: 8];  // 累加每个8位的段  
+        begin
+            for (i = 0; i < 4; i = i + 1) begin  
+                mean <= mean + conv_out[i*8 +: 8];  // 累加每个8位的段  
             end 
         end
-        else begin
-            for (i = 0; i < 30; i = i + 1) begin  
-            // 检查索引i的尾数是否为0或5  
-                if ((i % 10 != 0) && (i % 10 != 5)) mean <= mean + image[i*8 +: 8]; // 累加选定的字节   
-        end 
-        end
+
 
     end
 end
